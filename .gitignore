@@ -1,0 +1,11 @@
+venv/
+
+*/__pycache__/*
+
+*/migrations/__pycache__/
+
+third_party/
+
+.vscode/
+
+db.sqlite3
