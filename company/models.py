@@ -79,9 +79,3 @@ class Performance(models.Model):
     Investibility = models.FloatField(
         validators=[MinValueValidator(1), MaxValueValidator(100)])
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
-
-
-# q. if anyone gets code of django , then he or she can .. create another super user na .. and can log into admin pannel na?
-# oh okh.. ye alag alg admin pannel banaya hai..
-# ek superuser ka detail dooosre superuser k paas nii
-# but.. agar mai appke hi user se login kr deti toh aapka waala aata?
