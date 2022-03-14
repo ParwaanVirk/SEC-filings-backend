@@ -8,7 +8,7 @@ from django.db.models import Deferrable, UniqueConstraint
 class CompanyS(models.Model):
     id = models.BigAutoField(primary_key=True)
     Name = models.CharField(max_length=500, default="")
-    CIK_Number = models.CharField(max_length=50, default="")
+    CIK_Number = models.CharField(max_length=50, default="", unique=True)
     Ticket_Number = models.CharField(max_length=50, default="")
 
     def __str__(self) -> str:
@@ -16,43 +16,40 @@ class CompanyS(models.Model):
 
 
 Form_Type = [
-    ('Type1', '10k'),
-    ('Type2', '10q'),
-    ('Type3', '8k'),
+    ('10k', '10k'),
+    ('10q', '10q'),
+    ('8k', '8k'),
 ]
 
 
 class Forms(models.Model):
+    id = models.BigAutoField(primary_key=True)
     EDGAR_Link = models.URLField()
     Form_Type = models.CharField(
-        max_length=5, choices=Form_Type, default="Type1")
+        max_length=3, choices=Form_Type, default="10k")
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return str(self.CompanyS + " || " + self.Form_Type)
 
 
 Metric_type = [
     ('Type1', 'GrowthRate'),
     ('Type2', 'CAC'),
 ]
-
-
 def current_year():
     return datetime.date.today().year
-
-
 def max_value_current_year(value):
     return MaxValueValidator(current_year())
-
-
 Quarter_Type = [
     ('1', '1st quarter'),
     ('2', '2nd quarter'),
     ('3', '3rd quarter'),
     ('4', '4th quarter'),
-
 ]
 
-
 class Metrics(models.Model):
+    id = models.BigAutoField(primary_key=True)
     Metric_Type = models.CharField(
         max_length=5, choices=Metric_type, default="Type1")
     Value = models.FloatField(default=0.0)
@@ -61,9 +58,6 @@ class Metrics(models.Model):
         2015), max_value_current_year], default=current_year)
     Quarter = models.CharField(max_length=1, choices=Quarter_Type, default=1)
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
-    # TODO: How will we ensure unique combo of Metric_Type, year, quarter, and company. Task -- Akanksha
-    # TODO: Change all the models so that their admin show their names. Task -- Divya
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -72,6 +66,7 @@ class Metrics(models.Model):
 
 
 class Performance(models.Model):
+    id = models.BigAutoField(primary_key=True)
     Growth = models.FloatField(
         validators=[MinValueValidator(1), MaxValueValidator(100)])
     Profitability = models.FloatField(
