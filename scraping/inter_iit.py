@@ -10,20 +10,15 @@ import urllib
 from bs4 import BeautifulSoup
 import pandas as pd
 
+# function to make url. 
 def make_url(base_url , comp):
     url = base_url
-    # add each component to the base url
     for r in comp:
         url = '{}/{}'.format(url, r)
     return url
-year_list=['2019']
-hdr= {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'}
-list_url=[]
-
-
-
 
 def scraping_files(year1):
+  list_url = []
   # define the urls needed to make the request, let's start with all the daily filings
   base_url = r"https://www.sec.gov/Archives/edgar/full-index"
   # The daily-index filings, requir/e a year and content type (html, json, or xml).
@@ -55,35 +50,10 @@ def scraping_files(year1):
     for file in decoded_content['directory']['item'][0:20]:     
         file_url = make_url(base_url, [year1, item['name'], file['name']])
         list_url.append(file_url)
-        # print("File URL Link: " + file_url)
-
-for i in year_list:
-  scraping_files(i)
-
-list_url
-
-df=pd.read_excel("./Company.xlsx")
-companies_name_list=df['Company'].tolist()
-company_first=[]
-for i in companies_name_list:
-  l1=i.split(' ')
-  company_first.append(l1[0])
-form_type=['10-K','8-K','10-Q']
-
-len(companies_name_list)
-
-# print(company_first)
-
-"""#### Master list to store the url of required companies and the element is of the form ( CIK, Company Name, Form Type, Year and Quarter, url)
-
-> Indented block
-
-
-"""
-
-master_data = []
+  return list_url
 
 def parser_idx(url):
+  master_data = []
   file_url = r'%s' % url
   # request that new content, this will not be a JSON STRUCTURE!
   content = requests.get(file_url,headers=hdr).content
@@ -128,89 +98,7 @@ def parser_idx(url):
             if len(mini_list) != 0 and (mini_list[2] in form_type) :
                 mini_list[4] = "https://www.sec.gov/Archives/" + mini_list[4]
                 master_data.append(mini_list)
-                
-  
-# grab the first three items
-  # master_data[:3]
-
-  # print(master_data)
-
-for i in list_url:
-  i_length=len(i)
-  if i[i_length-10:i_length]=="master.idx":
-    try:
-      parser_idx(i)
-    except:
-      pass
-
-"""### Master list to store the data. Each element is in the form (CIK, Company Name, Form Type, Date, URL for file)"""
-
-master_dir=[]
-for i in master_data:
-  if i[1] in company_first or i[1] in companies_name_list:
-    master_dir.append(i)
-print("***********************************************************************************")
-# print(master_dir)
-
-len(master_dir)
-final_company=[]
-for i in master_dir:
-  if i[1] not in final_company:
-    final_company.append(i[1])
-
-
-
-"""# New section"""
-
-for index, document in enumerate(master_dir):
-    
-    # create a dictionary for each document in the master list
-    document_dict = {}
-    document_dict['cik_number'] = document[0]
-    document_dict['company_name'] = document[1]
-    document_dict['form_id'] = document[2]
-    document_dict['date'] = document[3]
-    document_dict['file_url'] = document[4]
-    if document[1] in companies_name_list or document[1] in company_first:
-      master_dir[index] = document_dict
-
-for i in master_data:
-  if i[2] not in form_type:
-    master_data.remove(i)
-
-len(master_dir)
-
-master_dir[0:10]
-
-"""#### Function to parse 10-K
-
-"""
-# def replace_txt():
-#   base_url = r"https://www.sec.gov"
-
-# convert a normal url to a document url
-for i in master_dir:
-  normal_url=i['file_url']
-  normal_url = normal_url.replace('-','').replace('.txt','/FilingSummary.xml')
-  i['file_url']=normal_url
-# define a url that leads to a 10k document landing page
-#   documents_url = r"https://www.sec.gov/Archives/edgar/data/1265107/000126510719000004/index.json"
-
-# # request the url and decode it.
-#   content = requests.get(documents_url).json()
-
-#   for file in content['directory']['item']:
-      
-#       # Grab the filing summary and create a new url leading to the file so we can download it.
-#       if file['name'] == 'FilingSummary.xml':
-
-#           xml_summary = base_url + content['directory']['name'] + "/" + file['name']
-          
-#           print('-' * 100)
-#           print('File Name: ' + file['name'])
-#           print('File Path: ' + xml_summary)
-
-
+  return master_data  
 
 def master_reports(base_url):
   
@@ -251,8 +139,6 @@ def master_reports(base_url):
         # print(report.position.text)
     return master_report
 
-  
-# # # #  # # # # # # # #  # # #  #  # # # # #  #      
 def extraction_10K(master_report):
   # create the list to hold the statement urls
   statements_url = []
@@ -355,8 +241,79 @@ def transform(statements_data):
   # show the df
   print(income_df)
 
-# drop the data in a CSV file if need be.
-# income_df.to_csv('income_state.csv')
+#put years for which forms are to be scraped. 
+year_list=['2019']
+hdr= {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'}
+# list_url=[]
+
+Master_list_url = []
+
+for i in year_list:
+  Master_list_url.append(scraping_files(i))
+
+df=pd.read_excel("./Company.xlsx")
+companies_name_list=df['Company'].tolist()
+company_first=[]
+for i in companies_name_list:
+  l1=i.split(' ')
+  company_first.append(l1[0])
+form_type=['10-K','8-K','10-Q']
+
+
+"""#### Master list to store the url of required companies and the element is of the form ( CIK, Company Name, Form Type, Year and Quarter, url)
+
+> Indented block
+
+
+"""
+
+ 
+  
+
+Master_data_Final = []
+for j in Master_list_url:
+  for i in j:
+    i_length=len(i)
+    if i[i_length-10:i_length]=="master.idx":
+      try:
+        Master_data_Final.append(parser_idx(i))
+      except:
+        pass
+
+"""### Master list to store the data. Each element is in the form (CIK, Company Name, Form Type, Date, URL for file)"""
+
+master_dir=[]
+for j in Master_data_Final:
+  for i in j:
+    if i[1] in company_first or i[1] in companies_name_list:
+      master_dir.append(i)
+
+for index, document in enumerate(master_dir):
+    
+    # create a dictionary for each document in the master list
+    document_dict = {}
+    document_dict['cik_number'] = document[0]
+    document_dict['company_name'] = document[1]
+    document_dict['form_id'] = document[2]
+    document_dict['date'] = document[3]
+    document_dict['file_url'] = document[4]
+    if document[1] in companies_name_list or document[1] in company_first:
+      master_dir[index] = document_dict
+
+for i in Master_data_Final:
+  if i[2] not in form_type:
+    Master_data_Final.remove(i)
+
+
+
+# convert a normal url to a document url
+for i in master_dir:
+  normal_url=i['file_url']
+  normal_url = normal_url.replace('-','').replace('.txt','/FilingSummary.xml')
+  i['file_url']=normal_url
+     
+
+
 for i in master_dir:
   if i['form_id']=="10-K":
     print('Company name : ' + i['company_name'])
