@@ -58,7 +58,7 @@ class Mostsearch(APIView):
 
 class Favourites(APIView):
     permission_classes = [IsAuthenticated]
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         cuser = request.user
         response_dict = {}
         if CompFav.objects.filter(account = cuser).exists() == True:
@@ -68,10 +68,10 @@ class Favourites(APIView):
                 Compdata.append(element.CompanyS)
             SerializedCompData = CompanySSerializer(Compdata, many = True)
             response_dict['data'] = SerializedCompData.data
-            return Response(data = response_dict, status = 200)
         else:
             response_dict['data'] = []
-            return Response(data = response_dict, status = 200)
+        
+        return Response(data = response_dict, status = 200)
     
     def post(self, request, *args, **kwargs):
         cuser = request.user
@@ -90,7 +90,7 @@ class Favourites(APIView):
                 )
                 response_dict['data'] = None
                 response_dict['success'] = True
-                return response(data = response_dict, status = 200)
+                return Response(data = response_dict, status = 200)
     
     def delete(self, request, *args, **kwargs):
         cuser = request.user
@@ -102,7 +102,7 @@ class Favourites(APIView):
                 Cf = CompFav.objects.filter(account = cuser, CompanyS = Comp)[0].delete()
                 response_dict['data'] = None
                 response_dict['success'] = True
-                return response(data = response_dict, status = 200)
+                return Response(data = response_dict, status = 200)
     
             
 class CompareComp(APIView):

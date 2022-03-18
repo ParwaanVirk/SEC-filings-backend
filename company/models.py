@@ -43,7 +43,7 @@ class Forms(models.Model):
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return str(self.CompanyS + " || " + self.Form_Type)
+        return str(str(self.CompanyS) + " || " + str(self.Form_Type))
 
 
 Metric_type = [

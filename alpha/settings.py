@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 AUTH_USER_MODEL = 'login.Account'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware',
               'django.middleware.security.SecurityMiddleware',
               'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,6 +59,7 @@ MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware',
               'django.middleware.clickjacking.XFrameOptionsMiddleware',
               ]
 
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'alpha.urls'
 
 TEMPLATES = [
