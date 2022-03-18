@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from login.models import * 
-from login.serializers import *
+from login.serialzers import *
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.

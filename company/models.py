@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import Deferrable, UniqueConstraint
+from login.models import Account
 # Create your models here.
 
 
@@ -20,6 +21,18 @@ Form_Type = [
     ('10q', '10q'),
     ('8k', '8k'),
 ]
+
+
+class CompFav(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['CompanyS', 'account']]
+    def __str__(self) -> str:
+        return str(str(self.CompanyS) + " || " + str(self.account)) 
+
 
 
 class Forms(models.Model):

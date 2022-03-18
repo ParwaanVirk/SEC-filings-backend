@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'login',
     'company',
     'corsheaders',
-
 ]
 AUTH_USER_MODEL = 'login.Account'
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware',

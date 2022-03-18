@@ -9,3 +9,5 @@ third_party/
 .vscode/
 
 db.sqlite3
+
+ScrapeCSV/

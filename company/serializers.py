@@ -1,9 +1,6 @@
 from rest_framework import serializers
 # from django.contrib.auth.models import User
-from .models import CompanyS
-from .models import Forms
-from .models import Metrics
-from .models import Performance
+from company.models import CompanyS, Forms, Metrics, Performance, CompFav
 
 
 class CompanySSerializer (serializers.ModelSerializer):
@@ -27,4 +24,10 @@ class MetricsSerializer (serializers.ModelSerializer):
 class PerformanceSerializer (serializers.ModelSerializer):
     class Meta:
         model = Performance
+        fields = '__all__'
+
+
+class CompFavSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompFav
         fields = '__all__'
