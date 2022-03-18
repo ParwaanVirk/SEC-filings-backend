@@ -11,8 +11,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.response import Response
 from rest_framework import filters
-#company search call, 
-#compare 2 companies call, 
+#company search call,
+#compare 2 companies call,
 from company.models import CompFav, Forms, Metrics, CompanyS, Performance
 from company.serializers import CompanySSerializer, FormsSerializer, MetricsSerializer, PerformanceSerializer
 from rest_framework import generics
@@ -35,10 +35,10 @@ class CompanyData(APIView):
             SerializedPerformanceData = PerformanceSerializer(PerformanceData, many = True)
             if CompFav.objects.filter(account = cuser, CompanyS = CompanyData).exists() == True:
                 starred = True
-            detail['company_data']=  SerializedCompanyData.data, 
-            detail['forms_data']= SerializedFormData.data, 
-            detail['metrics_data']= SerializedMetricsData.data, 
-            detail['performance_data']= SerializedPerformanceData.data, 
+            detail['company_data']=  SerializedCompanyData.data,
+            detail['forms_data']= SerializedFormData.data,
+            detail['metrics_data']= SerializedMetricsData.data,
+            detail['performance_data']= SerializedPerformanceData.data,
             detail['starred']= starred,
             return Response(data = detail,status = 200)
         else:
@@ -54,7 +54,7 @@ class Mostsearch(APIView):
         response_dict = {}
         response_dict['data'] = serialized_company_data.data
         return Response(data = response_dict, status = 200)
-    
+
 
 class Favourites(APIView):
     permission_classes = [IsAuthenticated]
@@ -70,9 +70,9 @@ class Favourites(APIView):
             response_dict['data'] = SerializedCompData.data
         else:
             response_dict['data'] = []
-        
+
         return Response(data = response_dict, status = 200)
-    
+
     def post(self, request, *args, **kwargs):
         cuser = request.user
         response_dict = {}
@@ -85,17 +85,17 @@ class Favourites(APIView):
                 return Response(data = response_dict, status = 200)
             else:
                 CompFav.objects.create(
-                    acocunt = cuser, 
+                    account = cuser,
                     CompanyS = Comp,
                 )
                 response_dict['data'] = None
                 response_dict['success'] = True
                 return Response(data = response_dict, status = 200)
-    
+
     def delete(self, request, *args, **kwargs):
         cuser = request.user
         response_dict = {}
-        comp_cik = request.data.get('comp_cik', None)
+        comp_cik = request.GET.get('comp_cik', None)
         if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
             Comp = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
             if CompFav.objects.filter(account = cuser, CompanyS = Comp).exists() == True:
@@ -103,8 +103,8 @@ class Favourites(APIView):
                 response_dict['data'] = None
                 response_dict['success'] = True
                 return Response(data = response_dict, status = 200)
-    
-            
+
+
 class CompareComp(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
@@ -119,7 +119,7 @@ class CompareComp(APIView):
                 SerializedCompanyData1 = CompanySSerializer(CompanyData1)
                 SerializedMetricsData1 = MetricsSerializer(MetricsData1, many = True)
                 SerializedPerformanceData1 = PerformanceSerializer(PerformanceData1, many = True)
-                
+
                 CompanyData2 = CompanyS.objects.filter(CIK_Number = comp2_cik)[0]
                 MetricsData2 = Metrics.objects.filter(CompanyS = CompanyData2)
                 PerformanceData2 = Performance.objects.filter(CompanyS = CompanyData2)
@@ -128,14 +128,14 @@ class CompareComp(APIView):
                 SerializedPerformanceData2 = PerformanceSerializer(PerformanceData2, many = True)
 
                 Comp1_data = {
-                    'Cdata' : SerializedCompanyData1.data, 
-                    'Mdata' : SerializedMetricsData1.data, 
-                    'Pdata' : SerializedPerformanceData1.data, 
+                    'Cdata' : SerializedCompanyData1.data,
+                    'Mdata' : SerializedMetricsData1.data,
+                    'Pdata' : SerializedPerformanceData1.data,
                 }
                 Comp2_data = {
-                    'Cdata' : SerializedCompanyData2.data, 
-                    'Mdata' : SerializedMetricsData2.data, 
-                    'Pdata' : SerializedPerformanceData2.data, 
+                    'Cdata' : SerializedCompanyData2.data,
+                    'Mdata' : SerializedMetricsData2.data,
+                    'Pdata' : SerializedPerformanceData2.data,
                 }
 
                 detail = {
