@@ -20,29 +20,31 @@ class CompanyData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, *args,**kwargs):
         cuser = request.user
-        if cuser != None:
-            comp_cik = request.data.get('comp_cik', None)
-            if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
-                starred = False
-                CompanyData = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
-                CompanyData.count = CompanyData.count +1
-                FormData = Forms.objects.filter(CompanyS = CompanyData)
-                MetricsData = Metrics.objects.filter(CompanyS = CompanyData)
-                PerformanceData = Performance.objects.filter(CompanyS = CompanyData)
-                SerializedCompanyData = CompanySSerializer(CompanyData)
-                SerializedFormData = FormsSerializer(FormData, many = True)
-                SerializedMetricsData = MetricsSerializer(MetricsData, many = True)
-                SerializedPerformanceData = PerformanceSerializer(PerformanceData, many = True)
-                if CompFav.objects.filter(account = cuser, CompanyS = CompanyData).exists() == True:
-                    starred = True
-                detail = {
-                    'company_data': SerializedCompanyData.data, 
-                    'forms_data': SerializedFormData.data, 
-                    'metrics_data': SerializedMetricsData.data, 
-                    'performance_data': SerializedPerformanceData.data, 
-                    'starred': starred,
-                }
-                return response(data = detail,status = 200)
+        comp_cik = request.data.get('comp_cik', None)
+        detail = {}
+        if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
+            starred = False
+            CompanyData = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
+            CompanyData.count = CompanyData.count +1
+            FormData = Forms.objects.filter(CompanyS = CompanyData)
+            MetricsData = Metrics.objects.filter(CompanyS = CompanyData)
+            PerformanceData = Performance.objects.filter(CompanyS = CompanyData)
+            SerializedCompanyData = CompanySSerializer(CompanyData)
+            SerializedFormData = FormsSerializer(FormData, many = True)
+            SerializedMetricsData = MetricsSerializer(MetricsData, many = True)
+            SerializedPerformanceData = PerformanceSerializer(PerformanceData, many = True)
+            if CompFav.objects.filter(account = cuser, CompanyS = CompanyData).exists() == True:
+                starred = True
+            detail['company_data']=  SerializedCompanyData.data, 
+            detail['forms_data']= SerializedFormData.data, 
+            detail['metrics_data']= SerializedMetricsData.data, 
+            detail['performance_data']= SerializedPerformanceData.data, 
+            detail['starred']= starred,
+            return Response(data = detail,status = 200)
+        else:
+            detail['error'] = "CIK number not found"
+            return Response(data = "", status = 404)
+
 
 
 class Mostsearch(APIView):

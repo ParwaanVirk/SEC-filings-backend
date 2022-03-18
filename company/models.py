@@ -71,11 +71,11 @@ class Metrics(models.Model):
         2015), max_value_current_year], default=current_year)
     Quarter = models.CharField(max_length=1, choices=Quarter_Type, default=1)
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["Metric_Type", "Source_Link", "Year", "Quarter", "CompanyS"], name='unique_value')
-        ]
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(
+    #             fields=["Metric_Type", "Source_Link", "Year", "Quarter", "CompanyS"], name='unique_value')
+    #     ]
 
 
 class Performance(models.Model):
