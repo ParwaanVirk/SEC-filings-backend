@@ -48,7 +48,6 @@ class CompanyData(APIView):
 
 
 class Mostsearch(APIView):
-    permission_classes = [IsAuthenticated]
     def get(self,request, *args, **kwargs):
         companies = CompanyS.objects.all().order_by('-count')[0:10]
         serialized_company_data = CompanySSerializer(companies, many = True)
