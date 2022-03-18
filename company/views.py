@@ -20,7 +20,7 @@ class CompanyData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, *args,**kwargs):
         cuser = request.user
-        comp_cik = request.data.get('comp_cik', None)
+        comp_cik = request.GET.get('comp_cik', None)
         detail = {}
         if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
             starred = False

@@ -34,8 +34,10 @@ class UserDataView(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request, *args, **kwargs):
         cuser = request.user
+        response_dict = {}
         cuserSerialized = UserSerializer(cuser)
-        return Response(data = cuserSerialized.data, status=200)
+        response_dict['data'] = cuserSerialized.data
+        return Response(data = response_dict, status=200)
 
 
 
