@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
-from login.models import * 
+from login.models import *
 from login.serialzers import *
 from rest_framework.permissions import IsAuthenticated
 
@@ -12,7 +12,7 @@ class RegistrationView(APIView):
         requester = {
             'email': request.data.get('email', None),
             'username': request.data.get('username', None),
-            'password' : request.data.get('password', None), 
+            'password' : request.data.get('password', None),
         }
         userType = request.data.get('interviewer', None)
         serializer = RegistrationSerializer(data = requester)
@@ -27,7 +27,6 @@ class RegistrationView(APIView):
             else:
                 data = serializer.errors
                 status = 422
-
         elif userType == "NO":
             if serializer.is_valid():
                 Caccount = serializer.save()
@@ -42,7 +41,7 @@ class RegistrationView(APIView):
         else:
             data = "Wrong data passed"
             status = 423
-        
+
         return Response(data, status)
 
 
@@ -55,7 +54,7 @@ class UserDataView(APIView):
 
 
 
-    
+
 class PasswordReset(APIView):
     permission_classes=[IsAuthenticated]
     def post(self, request, *args, **kwargs):

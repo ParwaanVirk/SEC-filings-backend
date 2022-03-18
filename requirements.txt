@@ -6,6 +6,7 @@ certifi==2021.10.8
 charset-normalizer==2.0.12
 click==8.0.4
 Django==4.0.3
+django-cors-headers==3.11.0
 djangorestframework==3.13.1
 et-xmlfile==1.1.0
 filelock==3.6.0
