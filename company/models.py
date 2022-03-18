@@ -11,7 +11,7 @@ class CompanyS(models.Model):
     Name = models.CharField(max_length=500, default="")
     CIK_Number = models.CharField(max_length=50, default="", unique=True)
     Ticket_Number = models.CharField(max_length=50, default="")
-
+    count = models.IntegerField(default=0)
     def __str__(self) -> str:
         return str(self.Name)
 

@@ -10,10 +10,12 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.response import Response
+from rest_framework import filters
 #company search call, 
 #compare 2 companies call, 
 from company.models import CompFav, Forms, Metrics, CompanyS, Performance
 from company.serializers import CompanySSerializer, FormsSerializer, MetricsSerializer, PerformanceSerializer
+from rest_framework import generics
 class CompanyData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, *args,**kwargs):
@@ -23,6 +25,7 @@ class CompanyData(APIView):
             if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
                 starred = False
                 CompanyData = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
+                CompanyData.count = CompanyData.count +1
                 FormData = Forms.objects.filter(CompanyS = CompanyData)
                 MetricsData = Metrics.objects.filter(CompanyS = CompanyData)
                 PerformanceData = Performance.objects.filter(CompanyS = CompanyData)
@@ -33,13 +36,22 @@ class CompanyData(APIView):
                 if CompFav.objects.filter(account = cuser, CompanyS = CompanyData).exists() == True:
                     starred = True
                 detail = {
-                    'Cdata': SerializedCompanyData.data, 
-                    'Fdata': SerializedFormData.data, 
-                    'Mdata': SerializedMetricsData.data, 
-                    'Pdata': SerializedPerformanceData.data, 
+                    'company_data': SerializedCompanyData.data, 
+                    'forms_data': SerializedFormData.data, 
+                    'metrics_data': SerializedMetricsData.data, 
+                    'performance_data': SerializedPerformanceData.data, 
                     'starred': starred,
                 }
                 return response(data = detail,status = 200)
+
+
+class Mostsearch(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request, *args, **kwargs):
+        companies = CompanyS.objects.all().order_by('-count')[0:10]
+        serialized_company_data = CompanySSerializer(companies, many = True)
+        return Response(data = serialized_company_data.data, status = 200)
+    
 
 class Favourites(APIView):
     permission_classes = [IsAuthenticated]
@@ -122,6 +134,9 @@ class CompareComp(APIView):
                 return response(data = detail, status = 200)
 
 
-def CompSearch(APIView):
-    permission_classes = [IsAuthenticated]
-    
+class CompSearch(generics.ListCreateAPIView):
+    search_fields = ['Name', 'CIK_Number']
+    filter_backends = (filters.SearchFilter, )
+    queryset = CompanyS.objects.all()
+    serializer_class = CompanySSerializer
+
