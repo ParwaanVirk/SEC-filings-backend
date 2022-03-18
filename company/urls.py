@@ -9,5 +9,4 @@ urlpatterns = [
     path('compare_comp/', CompareComp.as_view(), name='compare_comp'),
     path('search/', CompSearch.as_view(), name = 'search'),
     path('most_searched/', Mostsearch.as_view(), name = 'most_search'),
-    
     ]

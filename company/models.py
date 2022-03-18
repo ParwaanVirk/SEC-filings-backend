@@ -31,7 +31,7 @@ class CompFav(models.Model):
     class Meta:
         unique_together = [['CompanyS', 'account']]
     def __str__(self) -> str:
-        return str(str(self.CompanyS) + " || " + str(self.account)) 
+        return str(str(self.CompanyS) + " || " + str(self.account))
 
 
 
