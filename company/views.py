@@ -43,7 +43,7 @@ class CompanyData(APIView):
             return Response(data = detail,status = 200)
         else:
             detail['error'] = "CIK number not found"
-            return Response(data = "", status = 404)
+            return Response(data = detail, status = 404)
 
 
 
@@ -52,49 +52,59 @@ class Mostsearch(APIView):
     def get(self,request, *args, **kwargs):
         companies = CompanyS.objects.all().order_by('-count')[0:10]
         serialized_company_data = CompanySSerializer(companies, many = True)
-        return Response(data = serialized_company_data.data, status = 200)
+        response_dict = {}
+        response_dict['data'] = serialized_company_data.data
+        return Response(data = response_dict, status = 200)
     
 
 class Favourites(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         cuser = request.user
-        if cuser != None:
-            if CompFav.objects.filter(account = cuser).exists() == True:
-                favdata = CompFav.objects.filter(account = cuser)
-                Compdata = []
-                for element in favdata:
-                    # comp = CompanyS.objects.filter(CIK_Number = )
-                    Compdata.append(element.CompanyS)
-                SerializedCompData = CompanySSerializer(Compdata, many = True)
-                return response(data = SerializedCompData.data, status = 200)
+        response_dict = {}
+        if CompFav.objects.filter(account = cuser).exists() == True:
+            favdata = CompFav.objects.filter(account = cuser)
+            Compdata = []
+            for element in favdata:
+                Compdata.append(element.CompanyS)
+            SerializedCompData = CompanySSerializer(Compdata, many = True)
+            response_dict['data'] = SerializedCompData.data
+            return Response(data = response_dict, status = 200)
+        else:
+            response_dict['data'] = []
+            return Response(data = response_dict, status = 200)
     
     def post(self, request, *args, **kwargs):
         cuser = request.user
-        if cuser != None:
-            comp_cik = request.data.get('comp_cik', None)
-            if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
-                Comp = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
-                if CompFav.objects.filter(account = cuser, CompanyS = Comp).exists() == True:
-                    return Response(data = "Success", status = 200)
-
-                else:
-                    CompFav.objects.create(
-                        acocunt = cuser, 
-                        CompanyS = Comp,
-                    )
-                    return response(data = "Success", status = 200)
+        response_dict = {}
+        comp_cik = request.data.get('comp_cik', None)
+        if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
+            Comp = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
+            if CompFav.objects.filter(account = cuser, CompanyS = Comp).exists() == True:
+                response_dict['data'] = None
+                response_dict['success'] = True
+                return Response(data = response_dict, status = 200)
+            else:
+                CompFav.objects.create(
+                    acocunt = cuser, 
+                    CompanyS = Comp,
+                )
+                response_dict['data'] = None
+                response_dict['success'] = True
+                return response(data = response_dict, status = 200)
     
     def delete(self, request, *args, **kwargs):
         cuser = request.user
-        if cuser != None:
-            comp_cik = request.data.get('comp_cik', None)
-            if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
-                Comp = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
-                if CompFav.objects.filter(account = cuser, CompanyS = Comp).exists() == True:
-                    Cf = CompFav.objects.filter(account = cuser, CompanyS = Comp)[0].delete()
-                    return response(data = "Success", status = 200)
-        
+        response_dict = {}
+        comp_cik = request.data.get('comp_cik', None)
+        if CompanyS.objects.filter(CIK_Number = comp_cik).exists() == True:
+            Comp = CompanyS.objects.filter(CIK_Number = comp_cik)[0]
+            if CompFav.objects.filter(account = cuser, CompanyS = Comp).exists() == True:
+                Cf = CompFav.objects.filter(account = cuser, CompanyS = Comp)[0].delete()
+                response_dict['data'] = None
+                response_dict['success'] = True
+                return response(data = response_dict, status = 200)
+    
             
 class CompareComp(APIView):
     permission_classes = [IsAuthenticated]
