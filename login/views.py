@@ -14,33 +14,18 @@ class RegistrationView(APIView):
             'username': request.data.get('username', None),
             'password' : request.data.get('password', None),
         }
-        userType = request.data.get('interviewer', None)
         serializer = RegistrationSerializer(data = requester)
         data = {}
-        if userType == "YES":
-            if serializer.is_valid():
-                Caccount = serializer.save()
-                Caccount.is_assessor = True
-                Caccount.save()
-                data['response'] = "Successfully registered a new user"
-                status = 200
-            else:
-                data = serializer.errors
-                status = 422
-        elif userType == "NO":
-            if serializer.is_valid():
-                Caccount = serializer.save()
-                Caccount.is_candidate = True
-                Caccount.save()
-                data['response'] = "Successfully registered a new user"
-                status = 200
-            else:
-                data = serializer.errors
-                status = 422
-
+        if serializer.is_valid():
+            current_account = serializer.save()
+            data['token'] = Token.objects.filter(user = current_account)[0].key
+            data['registered'] = True
+            data['errors'] = None
+            status = 200
         else:
-            data = "Wrong data passed"
-            status = 423
+            data['registered'] = False
+            data['errors'] = serializer.errors
+            status = 422
 
         return Response(data, status)
 

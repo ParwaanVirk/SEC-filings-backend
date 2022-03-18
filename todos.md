@@ -1,0 +1,1 @@
+- Set token expiry to 1 day
