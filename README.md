@@ -50,7 +50,16 @@ python manage.py runserver
 
 **Seeding**:
 Database should be seeded from the csv files before actual usage of the application.
+**Manual**:
 This can be done by sending a GET request to route `/company/seeder/`.
+
+**CRON Jobs**:
+A cron job is set up for seeding the backend database from scraped csv filings.
+
+Instructions for using cron jobs
+```
+python manage.py crontab add
+```
 
 
 ## Problem Statement
@@ -63,8 +72,13 @@ common bottom-up framework.
 
 ## Functionalities
 - Metrics of SaaS companies can be viewed on an interactive web dashboard.
-  
+  ![image](https://user-images.githubusercontent.com/24855641/159131695-d9fc4c3f-49dd-464a-8a18-3611c84eaa11.png)
+
 - Side by side comparison of two companies.
+  ![image](https://user-images.githubusercontent.com/24855641/159131713-fdf8c7d8-19a6-477f-b6a1-0ab353eb777e.png)
+  ![image](https://user-images.githubusercontent.com/24855641/159131727-aad9de5a-af6c-4e54-a55a-0c5ed63f57fe.png)
+
+
 - Rating of a company in terms of Profitability, Investability and Growth.
   ![image](https://user-images.githubusercontent.com/24855641/159119143-ef16b0c3-0d90-42f7-be31-c13ef8f3ce56.png)
 
