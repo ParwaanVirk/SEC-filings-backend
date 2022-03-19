@@ -106,12 +106,10 @@ def parser_idx(url):
                 master_data.append(mini_list)
   return master_data  
 
-# # # # # # # # # Function to clean the dataframes extracted # #  # # # # # # 
+# Function to clean the dataframes extracted 
 def data_cleaning(income_df):
     for  i in income_df.columns:
-        # print(i)
         l1=income_df[i].unique().tolist()
-#         print(l1," ",len(income_df))
         if len(l1)<(len(income_df)/2):
             income_df.drop(columns=[i],inplace=True)
     return income_df
@@ -147,13 +145,6 @@ def master_reports(base_url):
         # append the dictionary to the master list.
         master_report.append(report_dict)
 
-        # print the info to the user.
-        # print('-'*100)
-        # print(base_url + report.htmlfilename.text)
-        # print(report.longname.text)
-        # print(report.shortname.text)
-        # print(report.menucategory.text)
-        # print(report.position.text)
     return master_report
 
 def extraction_10K(master_report):
@@ -176,9 +167,6 @@ def extraction_10K(master_report):
         print(report_dict['name_short'])
         
         # print some info and store it in the statements url.
-        # print('-'*100)
-        # print(report_dict['name_short'])
-        # print(report_dict['url'])
         statements_url.append(report_dict['url'])
     else:
         report_list.insert(0,report_dict['name_short'])
@@ -233,7 +221,6 @@ def statement_extraction(statements_url):
 
       # append it to the master list.
       statements_data.append(statement_data)
-    #   print(statements_data)
   return statements_data
 
 def transform(statements_data):
@@ -315,12 +302,8 @@ form_type=['10-K','8-K','10-Q']
 """#### Master list to store the url of required companies and the element is of the form ( CIK, Company Name, Form Type, Year and Quarter, url)
 
 > Indented block
-
-
 """
 
- 
-  
 
 Master_data_Final = []
 for j in Master_list_url:
@@ -370,14 +353,12 @@ for i in master_dir:
   if i['form_id']=="10-K" or i['form_id']=="10-Q":
     print('Company name : ' + i['company_name'])
     print('Company CIK number : ' + i['cik_number'])
-    # print('Company Ticket Number : ' + i['company_name'])
     filename=i['cik_number']+'_'+i['form_id']+'_'+i['date']
     base_url=i['file_url'""]
     master_rep=master_reports(base_url)
     statements_url=extraction_10K(master_rep)
-#     print(master_rep)
+
     statements_data=statement_extraction(statements_url)
-#     print(statements_data)
     p=transform(statements_data)
     final_header=header(statements_data)
     for i in range(len(p)):

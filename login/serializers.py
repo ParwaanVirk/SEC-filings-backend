@@ -1,4 +1,4 @@
-from login.models import *
+from login.models import Account
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import MaxValueValidator
@@ -28,14 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Account
         fields = ['id', 'email', 'username',]
-
-        
-
-class StudSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Account
-        fields = ['id', 'email', 'username',]
-
+  
 
 class ChangePasswordSerializer(serializers.Serializer):
 
@@ -46,6 +39,3 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         validate_password(value)
         return value
-
-class StudIdInputSerializer(serializers.Serializer):
-    stud_id = serializers.IntegerField(required = True, validators = [MaxValueValidator(5000)])

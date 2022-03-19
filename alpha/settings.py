@@ -44,12 +44,15 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 AUTH_USER_MODEL = 'login.Account'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware',
+
+MIDDLEWARE = [
+              'corsheaders.middleware.CorsMiddleware',
               'django.middleware.security.SecurityMiddleware',
               'django.contrib.sessions.middleware.SessionMiddleware',
               'django.middleware.common.CommonMiddleware',

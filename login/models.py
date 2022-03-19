@@ -1,8 +1,5 @@
-
-# Create your models here.
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-# Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
@@ -14,7 +11,6 @@ class MyAccountManager(BaseUserManager):
         if not username:
             raise ValueError("Users must have a username")
        
-        
         user = self.model(
             email = self.normalize_email(email),
             username = username,
@@ -36,8 +32,6 @@ class MyAccountManager(BaseUserManager):
         return user
 
 
-
-
 class Account(AbstractBaseUser):
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(verbose_name="email", max_length=50, unique=True)
@@ -48,10 +42,6 @@ class Account(AbstractBaseUser):
     is_active				= models.BooleanField(default=True)
     is_staff				= models.BooleanField(default=False)
     is_superuser			= models.BooleanField(default=False)
-    # is_assessor             = models.BooleanField(default=False)
-    # is_candidate            = models.BooleanField(default=False)
-    # ApplicationNo           = models.CharField(max_length=100, default="AA/000000")
-
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', ]
@@ -60,10 +50,10 @@ class Account(AbstractBaseUser):
 
     def __str__(self):
         return self.email
-    #all admins have all permisions
+
     def has_perm(self, perm, obj=None):
         return self.is_admin
-    #Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+
     def has_module_perms(self, app_label):
         return True
 

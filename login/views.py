@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
-from login.models import *
-from login.serialzers import *
 from rest_framework.permissions import IsAuthenticated
+from login.models import Token
+from login.serializers import ChangePasswordSerializer, RegistrationSerializer, UserSerializer
 
 # Create your views here.
 
@@ -57,7 +56,6 @@ class PasswordReset(APIView):
                     return Response(data= "Cannot keep same password", status = 420)
                 else:
                     cuser.set_password(newPassword)
-                    print(newPassword)
                     cuser.save()
                     return Response(status = 200, data = "Successfully updated password")
             else:

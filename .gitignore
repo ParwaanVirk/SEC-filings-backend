@@ -11,3 +11,5 @@ third_party/
 db.sqlite3
 
 ScrapeCSV/
+
+scraping/*.csv
