@@ -1,8 +1,8 @@
 from sre_constants import LITERAL
-from company.models import CompanyS
+from company.models import CompanyS, Metric_type, Metrics
 import os
 import csv
-
+from dateutil import parser
 # class KeyObject():
 #     param
 
@@ -46,6 +46,24 @@ def fetch_metric_from_form(metric_name, form_type, cik):
         return {}
 
 
+def Feeder(data_dict, company, metric_type):
+    if 'data' in data_dict:
+            for element in data_dict['data']:
+                print(element)
+                if element == 'NaN':
+                    element = -1
+                
+                Metrics.objects.create(
+                    Metric_Type = metric_type,
+                    Value = element,
+                    Filing_Date = data_dict['year'],
+                    Filing_Type = "10k",
+                    CompanyS = company,
+                    Source_Link = "https://www.sec.gov/edgar/searchedgar/companysearch.html"
+                )
+
+
+
 def seeder_10k():
     company_list = CompanyS.objects.all()
     for company in company_list:
@@ -61,22 +79,26 @@ def seeder_10k():
         annual_total_assets = fetch_metric_from_form('total assets', '10-K', company.CIK_Number)
         quarterly_total_assets = fetch_metric_from_form('total assets', '10-Q', company.CIK_Number)
 
-        
+        Feeder(total_revenue, company, 'annual revenue')
+        Feeder(quarterly_revenue, company, 'quarterly revenue')
+        Feeder(total_liabilities, company, 'annual liabilities')
+        Feeder(quarterly_liabilities, company, 'quarterly liabilities')
+        Feeder(annual_gross_profit, company, 'annual profit')
+        Feeder(quarterly_gross_profit, company, 'quarterly profit')
+        Feeder(annual_net_income, company, 'annual net income')
+        Feeder(quarterly_net_income, company, 'quarterly net income')
+        Feeder(annual_total_assets, company, 'annual assets')
+        Feeder(quarterly_total_assets, company, 'quarterly assets')
 
-        
 
-
-
-
-
-        print(total_revenue)
-        print(quarterly_revenue)
-        print(total_liabilities)
-        print(quarterly_liabilities)
-        print(annual_gross_profit)
-        print(quarterly_gross_profit)
-        print(annual_net_income)
-        print(quarterly_net_income)
-        print(annual_total_assets)
-        print(quarterly_total_assets)
+        # print(total_revenue)
+        # print(quarterly_revenue)
+        # print(total_liabilities)
+        # print(quarterly_liabilities)
+        # print(annual_gross_profit)
+        # print(quarterly_gross_profit)
+        # print(annual_net_income)
+        # print(quarterly_net_income)
+        # print(annual_total_assets)
+        # print(quarterly_total_assets)
         print('\n' * 3)

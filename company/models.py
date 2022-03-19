@@ -13,7 +13,7 @@ class CompanyS(models.Model):
     Ticket_Number = models.CharField(max_length=50, default="")
     count = models.IntegerField(default=0)
     def __str__(self) -> str:
-        return str(self.Name)
+        return str(self.Name + " || "+str(self.CIK_Number))
 
 
 Form_Type = [
@@ -76,7 +76,7 @@ class Metrics(models.Model):
         max_length=21, choices=Metric_type, default="")
     Value = models.FloatField(default=0.0)
     Source_Link = models.URLField()
-    Filing_Date = models.DateTimeField()
+    Filing_Date = models.DateField()
     Filing_Type = models.CharField(
         max_length=3, choices=Form_Type, default="10k")
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
