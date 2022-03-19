@@ -20,7 +20,7 @@ npm install
 
 3. Run frontend locally using
 ```
-ng serve
+npx ng serve
 ```
 
 ### Backend
