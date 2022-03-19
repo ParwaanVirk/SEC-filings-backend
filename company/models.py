@@ -76,7 +76,7 @@ class Metrics(models.Model):
         max_length=21, choices=Metric_type, default="")
     Value = models.FloatField(default=0.0)
     Source_Link = models.URLField()
-    Filing_Date = models.DateField()
+    Filing_Date = models.DateField(default=datetime.date.today)
     Filing_Type = models.CharField(
         max_length=3, choices=Form_Type, default="10k")
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
