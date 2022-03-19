@@ -5,7 +5,7 @@ import csv
 
 def fetch_metric_from_form(metric_name, form_type, cik):
     current_dir = os.path.dirname(__file__)
-    dir_name = os.path.join(current_dir, '../scrape')
+    dir_name = os.path.join(current_dir, '../scraping')
     metrics = {}
 
     for filename in os.scandir(dir_name):
@@ -13,8 +13,15 @@ def fetch_metric_from_form(metric_name, form_type, cik):
             if filename.name.find(cik + '_' + form_type) != -1:
                 with open(os.path.join(dir_name, filename.name)) as csv_file:
                     csv_reader = csv.reader(csv_file, delimiter=',')
+                    count = 0
+                    link = ''
                     for row in csv_reader:
-                        
+                        if count == 0:
+                            link = row[0]
+                            count = count + 1
+                            continue
+                
+
                         if row[0].lower().strip() == metric_name:
                             
                             if row[0].lower().strip() in metrics:
@@ -24,10 +31,12 @@ def fetch_metric_from_form(metric_name, form_type, cik):
                             else:
                                 metrics[row[0].lower().strip()] = {
                                     'year': filename.name.split('_')[2],
-                                    'data': [row[1].strip()]
+                                    'data': [row[1].strip()],
+                                    'link': link
                                 }
                                 for i in range(2, len(row)):
                                     metrics[row[0].lower().strip()]['data'].append(row[i])
+                    
 
     if metric_name in metrics:
         return metrics[metric_name]
@@ -47,7 +56,7 @@ def Feeder(data_dict, company, metric_type):
                 Filing_Date = data_dict['year'],
                 Filing_Type = "10k",
                 CompanyS = company,
-                Source_Link = "https://www.sec.gov/edgar/searchedgar/companysearch.html"
+                Source_Link = data_dict['link']
             )
 
 
