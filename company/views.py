@@ -124,3 +124,4 @@ class Seeding(APIView):
     def get(self, request, *args, **kwargs):
         seeder_10k()
         return Response(data = "Success", status = 200)
+

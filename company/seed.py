@@ -1,4 +1,4 @@
-from company.models import CompanyS, Metrics
+from company.models import CompanyS, Metrics, Performance
 import os
 import csv
 
@@ -59,7 +59,39 @@ def Feeder(data_dict, company, metric_type):
                 Source_Link = data_dict['link']
             )
 
+def performance_seeder(cik):
 
+    company = CompanyS.objects.filter(CIK_Number = cik)[0]
+    company_metrics = Metrics.objects.filter(CompanyS__CIK_Number = cik)
+    total_reveue_metrics = []
+    total_profitability_metrics = []
+    for metric in company_metrics:
+        if metric.Metric_Type == 'annual revenue':
+            total_reveue_metrics.append(metric.Value)
+        if metric.Metric_Type == 'annual profit':
+            total_profitability_metrics.append(metric.Value)
+
+    if len(total_reveue_metrics) < 2:
+        growth = 100
+    else:
+        growth = (max(total_reveue_metrics) - min(total_reveue_metrics)) / min(total_reveue_metrics) * 100
+
+    if len(total_profitability_metrics) < 2:
+        profitability = 100
+    else:
+        profitability = (max(total_profitability_metrics) - min(total_profitability_metrics)) / min(total_profitability_metrics) * 100
+
+    if len(total_profitability_metrics) > 1 and len(total_reveue_metrics) > 1:
+        investability = (growth + profitability) / 2
+    else:
+        investability = 100
+
+    Performance.objects.create(
+        Growth = round(growth, 2),
+        Profitability = round(profitability, 2), 
+        Investibility = round(investability, 2),
+        CompanyS = company
+    )
 
 def seeder_10k():
     company_list = CompanyS.objects.all()
@@ -87,3 +119,11 @@ def seeder_10k():
         Feeder(annual_total_assets, company, 'annual assets')
         Feeder(quarterly_total_assets, company, 'quarterly assets')
 
+        performance_seeder(company.CIK_Number)
+
+
+
+
+
+
+        

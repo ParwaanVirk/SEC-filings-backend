@@ -7,5 +7,5 @@ urlpatterns = [
     path('favourites/', Favourites.as_view(), name='favourites'),
     path('search/', CompSearch.as_view(), name = 'search'),
     path('most_searched/', Mostsearch.as_view(), name = 'most_search'),
-    path('seeder/', Seeding.as_view(), name = 'seeder')
+    path('seeder/', Seeding.as_view(), name = 'seeder'),
     ]
