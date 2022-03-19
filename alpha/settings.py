@@ -42,8 +42,13 @@ INSTALLED_APPS = [
     'login',
     'company',
     'corsheaders',
+    'django_crontab',
 ]
 AUTH_USER_MODEL = 'login.Account'
+
+CONJOBS = [
+    ('*/1 * * * *', 'company.seed.seeder_10k' )
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
