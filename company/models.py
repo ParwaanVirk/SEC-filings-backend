@@ -47,8 +47,17 @@ class Forms(models.Model):
 
 
 Metric_type = [
-    ('Type1', 'GrowthRate'),
-    ('Type2', 'CAC'),
+    ("", ""),
+    ('annual revenue', 'annual revenue'),
+    ('quarterly revenue', 'quarterly revenue'),
+    ('annual liabilities', 'annual liabilities'),
+    ('quarterly liabilities', 'quarterly liabilities'),
+    ('annual profit', 'annual profit'), 
+    ('quarterly profit', 'quarterly profit'), 
+    ('annual net income', 'annual net income'), 
+    ('quarterly net income', 'quarterly net income'), 
+    ('annual assets', 'annual assets'), 
+    ('quarterly assets', 'quarterly assets'), 
 ]
 def current_year():
     return datetime.date.today().year
@@ -64,13 +73,15 @@ Quarter_Type = [
 class Metrics(models.Model):
     id = models.BigAutoField(primary_key=True)
     Metric_Type = models.CharField(
-        max_length=5, choices=Metric_type, default="Type1")
+        max_length=21, choices=Metric_type, default="")
     Value = models.FloatField(default=0.0)
     Source_Link = models.URLField()
-    Year = models.IntegerField(('year'), validators=[MinValueValidator(
-        2015), max_value_current_year], default=current_year)
-    Quarter = models.CharField(max_length=1, choices=Quarter_Type, default=1)
+    Filing_Date = models.DateTimeField()
+    Filing_Type = models.CharField(
+        max_length=3, choices=Form_Type, default="10k")
     CompanyS = models.ForeignKey(CompanyS, on_delete=models.CASCADE)
+
+
     # class Meta:
     #     constraints = [
     #         models.UniqueConstraint(

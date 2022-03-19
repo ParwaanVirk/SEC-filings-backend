@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import filters
 #company search call,
 #compare 2 companies call,
+from company.seed import seeder_10k
 from company.models import CompFav, Forms, Metrics, CompanyS, Performance
 from company.serializers import CompanySSerializer, FormsSerializer, MetricsSerializer, PerformanceSerializer
 from rest_framework import generics
@@ -151,3 +152,7 @@ class CompSearch(generics.ListCreateAPIView):
     queryset = CompanyS.objects.all()
     serializer_class = CompanySSerializer
 
+class Seeding(APIView):
+    def get(self, requeset, *args, **kwargs):
+        seeder_10k()
+        return Response(data = "Success", status = 200)

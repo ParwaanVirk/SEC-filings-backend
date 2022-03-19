@@ -101,8 +101,6 @@ def parser_idx(url):
   return master_data  
 
 def master_reports(base_url):
-  
-
     base_url = i['file_url']
     base_url1=base_url.replace('FilingSummary.xml','')
     master_report=[]
@@ -143,7 +141,6 @@ def extraction_10K(master_report):
   # create the list to hold the statement urls
   statements_url = []
   for report_dict in master_report:
-    
     # define the statements we want to look for.
     item1 = r"consolidated balance sheets"
     item2 = r"consolidated statements of operations and comprehensive income (Loss)"
