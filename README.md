@@ -111,8 +111,9 @@ common bottom-up framework.
 ## ML Model Used:
 Since we had a small training dataset, we went on to use simple machine learning regression models to fit our data. Experiments were performed with three different machine learning models, namely Ridge Regression, SVM Regressor and Lasso Regression. Among these the Lasso model which uses L1 regularization, yielded the best generalization for the validation dataset. 
 Two different models were deployed with each category considered as a separate label in each dataset.
-Growth estimation model.
-Profitability estimation model
+- Growth estimation model.
+- Profitability estimation model.
+
 The lasso procedure encourages simple and sparse models(i.e models with fewer parameters). It also helps reduce overfitting of the model to the dataset, which had to be specially dealt with in this case. Thus the lasso model was chosen and the results have been displayed on the dashboard.
 
 
